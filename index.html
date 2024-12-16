@@ -38,7 +38,7 @@
             max-width: 800px;
             display: flex;
             flex-wrap: wrap;
-            gap: 20px;
+            gap: 10px;
             justify-content: center;
         }
 
@@ -48,7 +48,7 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             padding: 15px;
             text-align: center;
-            width: 250px;
+            width: 150px;
         }
 
         .product img {
@@ -132,6 +132,63 @@
             font-weight: bold;
             text-align: right;
         }
+
+        .footer {
+            background-color: #418dda;
+            color: white;
+            text-align: center;
+            padding: 17px;
+            position: fixed;
+            bottom: 0;
+            width: 95%;
+        }
+
+        .footer div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 105px;
+        }
+
+        .footer div span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .footer .icon {
+            width: 25px;
+            height: 25px;
+            background-color: white;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .footer .address-icon {
+            background: url('https://cdn-icons-png.flaticon.com/512/684/684908.png') no-repeat center;
+            background-size: cover;
+        }
+
+        .footer .phone-icon {
+            background: url('https://cdn-icons-png.flaticon.com/512/724/724664.png') no-repeat center;
+            background-size: cover;
+        }
+
+        .footer .email-icon {
+            background: url('https://cdn-icons-png.flaticon.com/512/732/732200.png') no-repeat center;
+            background-size: cover;
+        }
+
+        @media screen and (max-width: 600px) {
+            .container {
+                flex-direction: row;
+                justify-content: space-around;
+            }
+
+            .product {
+                width: 45%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -174,8 +231,17 @@
         </div>
     </div>
 
+    <div class="footer">
+        <div>
+            <span><span class="icon address-icon"></span>آدرس: مشهد ,مصباح یزدی1, پاساژ جوادالائمه, فروشگاه ربانی</span>
+            <span><span class="icon phone-icon"></span> تلفن: 09151159960</span>
+        </div>
+    </div>
+
     <script>
-        const cart = [];
+        const cart = document.getElementById('cart');
+        const cartItems = document.getElementById('cartItems');
+        const totalPrice = document.getElementById('totalPrice');
 
         function toggleDescription(button) {
             const description = button.nextElementSibling;
@@ -183,39 +249,26 @@
         }
 
         function addToCart(button) {
-            const product = button.parentElement;
-            const name = product.dataset.name;
-            const price = parseInt(product.dataset.price);
-            const image = product.dataset.image;
-            cart.push({ name, price, image });
-            alert(`${name} به سبد خرید اضافه شد.`);
+            const product = button.closest('.product');
+            const name = product.getAttribute('data-name');
+            const price = parseInt(product.getAttribute('data-price'));
+            const image = product.getAttribute('data-image');
+
+            const listItem = document.createElement('li');
+            listItem.innerHTML = `<img src="${image}" alt="${name}"><span>${name}</span><span>${price.toLocaleString()} تومان</span>`;
+            cartItems.appendChild(listItem);
+
+            updateTotalPrice(price);
+        }
+
+        function updateTotalPrice(price) {
+            const currentTotal = parseInt(totalPrice.textContent.replace(/[^\d]/g, '')) || 0;
+            const newTotal = currentTotal + price;
+            totalPrice.textContent = `مجموع: ${newTotal.toLocaleString()} تومان`;
         }
 
         function toggleCart() {
-            const cartElement = document.getElementById('cart');
-            const cartItems = document.getElementById('cartItems');
-            const totalPriceElement = document.getElementById('totalPrice');
-
-            cartItems.innerHTML = '';
-            let total = 0;
-
-            cart.forEach(item => {
-                const li = document.createElement('li');
-                const img = document.createElement('img');
-                img.src = item.image;
-                img.alt = item.name;
-                li.appendChild(img);
-
-                const text = document.createTextNode(`${item.name} - ${item.price.toLocaleString()} تومان`);
-                li.appendChild(text);
-
-                cartItems.appendChild(li);
-
-                total += item.price;
-            });
-
-            totalPriceElement.textContent = `مجموع: ${total.toLocaleString()} تومان`;
-            cartElement.style.display = cartElement.style.display === 'block' ? 'none' : 'block';
+            cart.style.display = cart.style.display === 'block' ? 'none' : 'block';
         }
     </script>
 </body>
