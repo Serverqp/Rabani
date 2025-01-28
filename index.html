@@ -1,274 +1,145 @@
 <!DOCTYPE html>
 <html lang="fa">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>فروشگاه لوازم خانگی</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            direction: rtl;
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(100deg, #70afcf, rgb(17, 102, 159), #77bdce);
-        }
-
-        .header {
-            background-color: #007bff;
-            color: white;
-            padding: 15px;
-            text-align: center;
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-        }
-
-        .header button {
-            background-color: white;
-            color: #007bff;
-            border: none;
-            padding: 10px 15px;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-
-        .container {
-            margin: 80px auto;
-            max-width: 800px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
-        }
-
-        .product {
-            background-color: rgb(213, 206, 206);
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 15px;
-            text-align: center;
-            width: 150px;
-        }
-
-        .product img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 10px;
-        }
-
-        .product h3 {
-            margin: 10px 0;
-        }
-
-        .product p {
-            margin: 10px 0;
-            display: none;
-        }
-
-        .product .price-box {
-            margin: 10px 0;
-            background-color: #f8f9fa;
-            padding: 10px;
-            border-radius: 5px;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .product button {
-            margin: 5px 0;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            width: 100%;
-        }
-
-        .product button:hover {
-            background-color: #0056b3;
-        }
-
-        .cart {
-            display: none;
-            position: fixed;
-            top: 100px;
-            right: 10%;
-            background-color: white;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            border-radius: 10px;
-            width: 300px;
-            z-index: 1000;
-        }
-
-        .cart h3 {
-            margin-top: 0;
-        }
-
-        .cart ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .cart ul li {
-            display: flex;
-            align-items: center;
-            margin: 10px 0;
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 5px;
-        }
-
-        .cart ul li img {
-            width: 30px;
-            height: 30px;
-            margin-left: 10px;
-            border-radius: 5px;
-        }
-
-        .cart .total {
-            margin-top: 15px;
-            font-weight: bold;
-            text-align: right;
-        }
-
-        .footer {
-            background-color: #14487f;
-            color: white;
-            text-align: center;
-            padding: 13px;
-            position: fixed;
-            bottom: 0;
-            width: 96%;
-        }
-
-        .footer div {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .footer div span {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            margin-right: 2px; /* اضافه شده برای مایل کردن متن */
-        }
-
-        .footer .icon {
-            width: 20px;
-            height: 20px;
-            background-color: white;
-            border-radius: 50%;
-            display: inline-block;
-        }
-
-        .footer .address-icon {
-            background: url('https://cdn-icons-png.flaticon.com/512/684/684908.png') no-repeat center;
-            background-size: cover;
-        }
-
-        .footer .phone-icon {
-            background: url('https://cdn-icons-png.flaticon.com/512/724/724664.png') no-repeat center;
-            background-size: cover;
-        }
-
-        
-
-        @media screen and (max-width: 600px) {
-            .container {
-                flex-direction: row;
-                justify-content: space-around;
-            }
-
-            .product {
-                width: 45%;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>آتش‌بازی شبانه</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background-color: black;
+      overflow: hidden;
+    }
+    canvas {
+      display: block;
+    }
+    #overlay {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-color: black;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 2rem;
+      z-index: 2;
+    }
+  </style>
 </head>
 <body>
-    <div class="header">
-        <button onclick="toggleCart()">سبد خرید من</button>
-    </div>
+  <!-- لایه مشکی اولیه -->
+  <div id="overlay">در حال بارگذاری...</div>
+  <!-- بوم آتش‌بازی -->
+  <canvas id="fireworksCanvas"></canvas>
 
-    <div class="cart" id="cart">
-        <h3>سبد خرید</h3>
-        <ul id="cartItems"></ul>
-        <div class="total" id="totalPrice">مجموع: ۰ تومان</div>
-    </div>
+  <script>
+    setTimeout(() => {
+      document.getElementById("overlay").style.display = "none";
 
-    <div class="container">
-        <div class="product" data-name="یخچال" data-price="15000000" data-image="https://kala23.com/storage/2023/06/TFH17T-2.jpg">
-            <img src="https://kala23.com/storage/2023/06/TFH17T-2.jpg" alt="یخچال">
-            <h3>یخچال</h3>
-            <button onclick="toggleDescription(this)">توضیحات</button>
-            <p>یخچال با ظرفیت بالا و مصرف انرژی کم.</p>
-            <div class="price-box">۱۵,۰۰۰,۰۰۰ تومان</div>
-            <button onclick="addToCart(this)">افزودن به سبد خرید</button>
-        </div>
+      const canvas = document.getElementById("fireworksCanvas");
+      const ctx = canvas.getContext("2d");
 
-        <div class="product" data-name="مایکروویو" data-price="7000000" data-image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReT80e0l2m_2GUUbDEKXf5Qft5ve7qmurRFA&s">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReT80e0l2m_2GUUbDEKXf5Qft5ve7qmurRFA&s" alt="مایکروویو">
-            <h3>مایکروویو</h3>
-            <button onclick="toggleDescription(this)">توضیحات</button>
-            <p>مایکروویو با امکانات پیشرفته و طراحی مدرن.</p>
-            <div class="price-box">۷,۰۰۰,۰۰۰ تومان</div>
-            <button onclick="addToCart(this)">افزودن به سبد خرید</button>
-        </div>
+      // تنظیمات ابعاد canvas
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
 
-        <div class="product" data-name="لباسشویی" data-price="12000000" data-image="https://shop.sepehrelectric.com/wp-content/uploads/2023/10/SE1289W-SE1299W.jpg">
-            <img src="https://shop.sepehrelectric.com/wp-content/uploads/2023/10/SE1289W-SE1299W.jpg" alt="لباسشویی">
-            <h3>لباسشویی</h3>
-            <button onclick="toggleDescription(this)">توضیحات</button>
-            <p>لباسشویی با قابلیت شست‌وشوی سریع و مصرف آب کم.</p>
-            <div class="price-box">۱۲,۰۰۰,۰۰۰ تومان</div>
-            <button onclick="addToCart(this)">افزودن به سبد خرید</button>
-        </div>
-    </div>
+      // مجموعه‌ای برای ذخیره ذرات آتش‌بازی
+      const particles = [];
 
-    <div class="footer">
-        <div>
-            <span><span class="icon address-icon"></span>آدرس:  مشهد ,مصباح یزدی1, پاساژ جوادالائمه, فروشگاه ربانی</span>
-            <span><span class="icon phone-icon"></span> تلفن: ۰۹۱۵۱۱۵۹۹۶۰</span>
-        </div>
-    </div>
+      // تابع برای ایجاد آتش‌بازی (نوع: دایره، موج، ستاره)
+      function createFirework(x, y, type = "circle") {
+        const colors = ["#ff0000", "#ffa500", "#ffff00", "#00ff00", "#00ffff", "#0000ff", "#ff00ff"];
+        const particleCount = type === "star" ? 80 : 50; // تعداد ذرات
 
-    <script>
-        const cart = document.getElementById('cart');
-        const cartItems = document.getElementById('cartItems');
-        const totalPrice = document.getElementById('totalPrice');
+        for (let i = 0; i < particleCount; i++) {
+          const angle = Math.random() * Math.PI * 2;
+          const speed = Math.random() * 6 + 2; // سرعت ذرات
 
-        function toggleDescription(button) {
-            const description = button.nextElementSibling;
-            description.style.display = description.style.display === 'block' ? 'none' : 'block';
+          let speedX = Math.cos(angle) * speed;
+          let speedY = Math.sin(angle) * speed;
+
+          if (type === "wave") {
+            speedX *= (Math.random() > 0.5 ? 1 : -1); // موجی
+            speedY *= (Math.random() > 0.5 ? 1 : -1);
+          }
+
+          if (type === "star" && i % 5 === 0) {
+            speedX *= 1.5; // ستاره‌های بزرگ‌تر
+            speedY *= 1.5;
+          }
+
+          particles.push({
+            x: x,
+            y: y,
+            radius: Math.random() * 3 + 1,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            speedX: speedX,
+            speedY: speedY,
+            alpha: 1, // شفافیت
+            decay: Math.random() * 0.02 + 0.01 // سرعت محو شدن
+          });
         }
+      }
 
-        function addToCart(button) {
-            const product = button.closest('.product');
-            const name = product.getAttribute('data-name');
-            const price = parseInt(product.getAttribute('data-price'));
-            const image = product.getAttribute('data-image');
+      // حلقه رندر برای کشیدن آتش‌بازی
+      function animate() {
+        // پاک کردن صفحه
+        ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            const listItem = document.createElement('li');
-            listItem.innerHTML = `<img src="${image}" alt="${name}"><span>${name}</span><span>${price.toLocaleString()} تومان</span>`;
-            cartItems.appendChild(listItem);
+        // به‌روزرسانی و کشیدن ذرات
+        particles.forEach((particle, index) => {
+          particle.x += particle.speedX;
+          particle.y += particle.speedY;
+          particle.alpha -= particle.decay;
 
-            updateTotalPrice(price);
-        }
+          if (particle.alpha <= 0) {
+            particles.splice(index, 1); // حذف ذره‌ای که محو شده
+          } else {
+            ctx.beginPath();
+            ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(${hexToRgb(particle.color)}, ${particle.alpha})`;
+            ctx.fill();
+          }
+        });
 
-        function updateTotalPrice(price) {
-            const currentTotal = parseInt(totalPrice.textContent.replace(/[^\d]/g, '')) || 0;
-            const newTotal = currentTotal + price;
-            totalPrice.textContent = `مجموع: ${newTotal.toLocaleString()} تومان`;
-        }
+        requestAnimationFrame(animate);
+      }
 
-        function toggleCart() {
-            cart.style.display = cart.style.display === 'block' ? 'none' : 'block';
-        }
-    </script>
+      // تبدیل رنگ هگز به RGB
+      function hexToRgb(hex) {
+        const bigint = parseInt(hex.slice(1), 16);
+        const r = (bigint >> 16) & 255;
+        const g = (bigint >> 8) & 255;
+        const b = bigint & 255;
+        return `${r}, ${g}, ${b}`;
+      }
+
+      // ایجاد آتش‌بازی تصادفی با انواع مختلف
+      setInterval(() => {
+        const randomX = Math.random() * canvas.width;
+        const randomY = Math.random() * canvas.height * 0.5;
+
+        // به صورت تصادفی نوع آتش‌بازی انتخاب می‌شود
+        const types = ["circle", "wave", "star"];
+        const randomType = types[Math.floor(Math.random() * types.length)];
+
+        createFirework(randomX, randomY, randomType);
+      }, 300); // تعداد آتش‌بازی‌ها افزایش یافته است
+
+      // ایجاد آتش‌بازی با کلیک
+      canvas.addEventListener("click", (e) => {
+        const types = ["circle", "wave", "star"];
+        const randomType = types[Math.floor(Math.random() * types.length)];
+        createFirework(e.clientX, e.clientY, randomType);
+      });
+
+      // شروع انیمیشن
+      animate();
+    }, 1000);
+  </script>
 </body>
 </html>
-
